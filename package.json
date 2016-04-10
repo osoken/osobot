@@ -1,0 +1,22 @@
+{
+  "name": "osobot",
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/osoken/osobot.git"
+  },
+  "author": "osoken",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/osoken/osobot/issues"
+  },
+  "homepage": "https://github.com/osoken/osobot#readme",
+  "dependencies": {
+    "@slack/client": "^2.3.0"
+  }
+}
