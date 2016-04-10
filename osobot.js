@@ -56,12 +56,21 @@ bot.say = function(message, channel, cb) {
   );
 };
 
-bot.kill = function()
+var _kill = function()
 {
+  if (arguments.length === 0 || arguments[0] > 0)
+  {
+    if (instant.length) {
+      setTimeout(_kill, 3000, (arguments[0]-1)||5);
+      return;
+    }
+  }
   dispatcher.on('tick', null);
   rtm.disconnect();
   clearInterval(heart_beat);
 };
+
+bot.kill = _kill;
 
 rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
   start_data = rtmStartData;
@@ -78,7 +87,7 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
       setTimeout(instant.shift(1)(), 200);
     }
     dispatcher.tick();
-  }, 200);
+  }, 2000);
 });
 
 module.exports = bot;
