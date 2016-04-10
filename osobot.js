@@ -72,7 +72,7 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
 });
 
 rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
-  setInterval(function()
+  heart_beat = setInterval(function()
   {
     if (instant.length) {
       setTimeout(instant.shift(1)(), 200);
