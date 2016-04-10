@@ -2,15 +2,18 @@
 
 var constant = function(_)
 {
-  return function(){return _;}
-}
+  return function(){return _;};
+};
 
 var _config = {};
 
 var config = {
-  get: function(key, _) {
+  get: function(key) {
+    var args = (arguments.length === 1?
+                [arguments[0]]:
+                Array.apply(null, arguments));
     if (_config[key] !== void 0) {
-      return _config[key].apply(this, arguments);
+      return _config[key].apply(this, args.slice(1));
     }
     return void 0;
   },

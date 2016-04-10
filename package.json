@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/osoken/osobot#readme",
   "dependencies": {
-    "@slack/client": "^2.3.0"
+    "@slack/client": "^2.3.0",
+    "d3": "^3.5.16"
   }
 }
