@@ -30,7 +30,7 @@ var config = {
   }
 };
 
-config.set(token, process.env.SLACK_API_TOKEN || function() {
+config.set('token', process.env.SLACK_API_TOKEN || function() {
   throw new Error('Slack token is not set!');
 });
 
