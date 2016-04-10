@@ -7,53 +7,78 @@ var CLIENT_EVENTS = require('@slack/client').CLIENT_EVENTS;
 var config = require('./config');
 
 var bot = {
-  is_authenticated: false,
-  is_initialized: false
 };
+
+var instant = [];
+var scheduled = [];
+
+var start_data = {};
+var channelname_data_map = {};
 
 var token = config.get('token');
 
-//var rtm = new RtmClient(token, {logLevel: 'debug'});
-var rtm = new RtmClient(token);
+var rtm = new RtmClient(token, {logLevel: 'debug'});
+//var rtm = new RtmClient(token);
 rtm.start();
-
-rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
-  bot.start_data = rtmStartData;
-  bot.channelname_data_map = {};
-  rtmStartData.channels.forEach(function(d)
-  {
-    bot.channelname_data_map[d.name] = d;
-  });
-  bot.is_authenticated = true;
-});
-
-rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
-  bot.is_initialized = true;
-});
-
-bot.say = function(message, channel, cb) {
-  if (!bot.is_initialized)
-  {
-    setTimeout(bot.say, 200, message, channel, cb);
-  }
-  else {
-    if (bot.channelname_data_map[channel] === void 0)
-    {
-      throw new Error('unknown channel: ' + channel);
-    }
-    rtm.sendMessage(message,
-                    bot.channelname_data_map[channel].id,
-                    cb||function(){});
-  }
-};
 
 var dispatcher = d3.dispatch('tick');
 
 d3.rebind(bot, dispatcher, 'on');
 
-bot.heart_beat = setInterval(function()
+var heart_beat = null;
+
+var _constant = function(_) {
+  return function(){return _;};
+};
+
+var _ask = function(f) {
+  var args = (arguments.length === 1?
+              [arguments[0]]:
+              Array.apply(null, arguments));
+  if (typeof f === 'function') {
+    instant.push(function(){return f.apply(this, args.slice(1));});
+  }
+};
+
+bot.say = function(message, channel, cb) {
+  var _cb = cb || function(){};
+  _ask(
+    function(){
+      if (channelname_data_map[channel] === void 0)
+      {
+
+        return _cb(new Error('unknown channel: ' + channel), null);
+      }
+      rtm.sendMessage(message,
+                      channelname_data_map[channel].id,
+                      _cb);
+    }
+  );
+};
+
+bot.kill = function()
 {
-  dispatcher.tick();
-}, 1000);
+  dispatcher.on('tick', null);
+  rtm.disconnect();
+  clearInterval(heart_beat);
+};
+
+rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
+  start_data = rtmStartData;
+  start_data.channels.forEach(function(d)
+  {
+    channelname_data_map[d.name] = d;
+  });
+});
+
+rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
+  setInterval(function()
+  {
+    if (instant.length) {
+      setTimeout(instant.shift(1)(), 200);
+    }
+    dispatcher.tick();
+  }, 200);
+});
 
 module.exports = bot;
