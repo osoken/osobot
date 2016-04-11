@@ -59,8 +59,10 @@ bot.say = function(message, channel, cb) {
 
 var _kill = function()
 {
-  if (arguments.length === 0 || arguments[0] > 0)
-  {
+  if (heart_beat == null) {
+    return;
+  }
+  if (arguments.length === 0 || arguments[0] > 0) {
     if (instant.length) {
       setTimeout(_kill, 3000, (arguments[0]-1)||5);
       return;
@@ -69,6 +71,7 @@ var _kill = function()
   dispatcher.on('tick', null);
   rtm.disconnect();
   clearInterval(heart_beat);
+  heart_beat = null;
 };
 
 bot.kill = _kill;
