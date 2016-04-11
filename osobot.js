@@ -97,4 +97,9 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
   }, 2000);
 });
 
+process.on('exit', function() {
+  console.log('killing');
+  _kill();
+});
+
 module.exports = bot;
