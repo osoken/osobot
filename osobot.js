@@ -10,15 +10,16 @@ var bot = {
 };
 
 var instant = [];
-var scheduled = [];
+var procs = [];
 
 var start_data = {};
 var channelname_data_map = {};
+var username_data_map = {};
 
 var token = config.get('token');
 
-var rtm = new RtmClient(token, {logLevel: 'debug'});
-//var rtm = new RtmClient(token);
+//var rtm = new RtmClient(token, {logLevel: 'debug'});
+var rtm = new RtmClient(token);
 rtm.start();
 
 var dispatcher = d3.dispatch('tick');
@@ -77,6 +78,9 @@ rtm.on(CLIENT_EVENTS.RTM.AUTHENTICATED, function (rtmStartData) {
   start_data.channels.forEach(function(d)
   {
     channelname_data_map[d.name] = d;
+  });
+  start_data.users.forEach(function(d) {
+    username_data_map[d.name] = d;
   });
 });
 
