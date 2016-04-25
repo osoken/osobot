@@ -19,5 +19,9 @@
   "dependencies": {
     "@slack/client": "^2.3.0",
     "d3": "^3.5.16"
+  },
+  "devDependencies": {
+    "eslint": "^2.8.0",
+    "eslint-plugin-react": "^4.3.0"
   }
 }
