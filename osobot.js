@@ -98,7 +98,6 @@ rtm.on(CLIENT_EVENTS.RTM.RTM_CONNECTION_OPENED, function () {
 });
 
 process.on('exit', function() {
-  console.log('killing');
   _kill();
 });
 
